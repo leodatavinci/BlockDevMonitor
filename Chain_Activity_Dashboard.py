@@ -50,11 +50,10 @@ def draw_chart(df, options, start_date, end_date, title, x_axis, y_axis):
                     mode='lines+markers',
                     name=chain)
                     )
-    
-
-    fig.update_layout(title=title, autosize=False,
-            width=700, height=600,
-            margin=dict(l=40, r=40, b=40, t=40))
+        
+        fig.update_layout(title=title, autosize=False,
+                width=700, height=600,
+                margin=dict(l=40, r=40, b=40, t=100))
     
     return fig
 
