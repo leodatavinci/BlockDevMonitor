@@ -268,7 +268,7 @@ with st.container():
 
 #=======================================
 
-options_new_repositories_per_chain = st.multiselect('Select Blockchains:  ', all_chains, ['Bitcoin', 'Ethereum', 'Binance', 'Cardano', 'Solana', 'Polygon'])
+options_new_repositories_per_chain = st.multiselect('Select Blockchains:  ', all_chains, ['Ethereum', 'Binance', 'Cardano', 'Solana', 'Polygon'])
 
 col1, col2, col3, col4 = st.columns(4)
 
