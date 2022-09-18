@@ -34,7 +34,7 @@ st.title("Monitored GitHub Repositories")
 
 st.header("Total Repositories: " + str(len(df_repositories.index)))
 
-st.info('The total amount of GitHub Repositories in scope is much higher than the number of repos that are beeing monitored. To ensure the data integrity a rigid algorightm is applied to filter and classify the repositories retrieved from GitHub. The filter configuration is very sensitive to ensure the number of false positive repositores (Repos that are not blockchain related) is kept as low as possible.', icon="ℹ️")
+st.info('Data Mining Methodology: The objective is to provide insights to developer activities on different blockchain protocols. GitHub repositories are herefore screened and assigned to a protocol by a key word algorithm applied to the repository name and description. The key word rules to conclude on what protocol a project is building on, are configured to keep the number of false positive repositories as low as possible.', icon="ℹ️")
 
 all_chains.append("All")
 
