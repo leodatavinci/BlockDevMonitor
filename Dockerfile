@@ -1,8 +1,5 @@
 FROM python:3.9
 
-# Expose port you want your app on
-EXPOSE 8080
-
 # Upgrade pip and install requirements
 COPY requirements.txt requirements.txt
 RUN pip install -U pip
