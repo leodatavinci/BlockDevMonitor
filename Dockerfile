@@ -10,4 +10,4 @@ COPY . .
 WORKDIR /app
 
 # Run
-ENTRYPOINT ["streamlit", "run", "1_📈_Chain_Activity_Dashboard.py"]
+ENTRYPOINT ["streamlit", "run", "Chain_Activity_Dashboard.py"]
