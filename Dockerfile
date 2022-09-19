@@ -10,4 +10,4 @@ COPY . .
 WORKDIR /app
 
 # Run
-ENTRYPOINT ["streamlit", "run", "1_📈_Chain_Activity_Dashboard.py", "–server.port=8080", "–server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "1_📈_Chain_Activity_Dashboard.py"]
