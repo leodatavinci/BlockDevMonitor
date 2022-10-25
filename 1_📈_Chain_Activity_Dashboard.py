@@ -8,155 +8,17 @@ import plotly.express as px
 from datetime import datetime
 from datetime import timedelta
 from charts import *
+import streamlit.components.v1 as components
 
 
-#=============================
 
-mongo_client = pymongo.MongoClient(st.secrets["connection_string"])
-db = mongo_client["Crypto01"]
-
-df_chains = pd.DataFrame(db.chains.find())
-all_chains = list(set(df_chains['coin']))
-    
-#=============================
-
-def draw_option_timespan(invisible_index):
-
-        option_timespan = st.selectbox(
-        'Time span' + str(invisible_index),
-        ('6 Months', '1 Year', 'All'), 2
-        )
-
-        if option_timespan == '6 Months':
-            days = 6 * 31
-        elif option_timespan == '1 Year':
-            days = 12 * 31
-        elif option_timespan == 'All':
-            days = 120 * 31
-        
-        return days
-
-
-def draw_chart(df, options, start_date, end_date, title, x_axis, y_axis):
-        
-    fig = go.Figure()
-        
-    chart_chains = options
-    
-    for chain in chart_chains: 
-    
-        df_chain = df.loc[df['chain'] == chain]
-        df_chain = df_chain[(df_chain[x_axis] > end_date) & (df_chain[x_axis] <= start_date)]
-        
-        fig.add_trace(go.Scatter(x=df_chain[x_axis], y=df_chain[y_axis],
-                    mode='lines+markers',
-                    name=chain)
-                    )
-        
-        fig.update_layout(title=title, autosize=False,
-                width=700, height=600,
-                margin=dict(l=40, r=40, b=40, t=100))
-    
-    return fig
-
-def pie_chart_all_repositories():
-    
-    df_repository_count = pd.DataFrame(db.repository_count.find())
-    df_repository_count.loc[df_repository_count['Total Repositories'] < 1500, 'chain'] = 'Other Chains'
-    df_repository_count = df_repository_count.reset_index(level=0)
-    
-    fig = px.pie(df_repository_count, values=df_repository_count['Total Repositories'], names=df_repository_count['chain'], title='Repositories per Chain Monitored')
-    fig.update_traces(textinfo='value')
-       
-    return fig
-        
-def multiline_chart_commits_all_devs(option_agg, start_date, end_date, options):
-    
-    if option_agg == 'Day':
-        col = 'commits_per_chain_1d'
-
-        
-    elif option_agg == 'Week':
-        col = 'commits_per_chain_1w'
-
-        
-    elif option_agg == 'Month':
-        col = 'commits_per_chain_1m'
-            
-    df_commits_per_chain = DataFrame(db[col].find())
-    df_commits_per_chain['date']= pd.to_datetime(df_commits_per_chain['date'])  
-    
-    df = df_commits_per_chain
-        
-    fig = draw_chart(df, options, start_date, end_date, "Commits all Developers per Chain", 'date', 'commits')
-    
-    return fig
-
-#def multiline_chart_commits_senior_devs(option_agg, start_date, end_date, options):
-    
-    """
-    if option_agg == 'Day':
-        col = 'commits_per_chain_sen_dev_1d'
-    """
-        
-    if option_agg == 'Week':
-        col = 'commits_per_chain_sen_dev_1w'
-
-        
-    elif option_agg == 'Month':
-        col = 'commits_per_chain_sen_dev_1m'
-            
-    df_commits_per_chain = DataFrame(db[col].find())
-    df_commits_per_chain['date']= pd.to_datetime(df_commits_per_chain['date'])  
-    
-    df = df_commits_per_chain
-        
-    fig = draw_chart(df, options, start_date, end_date, "Commits Senior Developers per Chain", 'date','commits')
-    
-    return fig
-
-def multiline_new_repositories_per_chain(start_date, end_date, options):
-           
-    df_new_repositories_per_mo = DataFrame(db.new_repositories_per_mo.find())
-    df_new_repositories_per_mo['date']= pd.to_datetime(df_new_repositories_per_mo['date'])  
-    
-    df = df_new_repositories_per_mo
-        
-    fig = draw_chart(df, options, start_date, end_date, "New Repositories per Chain per Month", 'date','total_repositories')
-    
-    return fig
-
-def multiline_chart_new_devs_per_chain(start_date, end_date, options):
-           
-    df_new_developers_per_chain_per_mo = DataFrame(db.new_developers_per_chain_per_mo.find())
-    df_new_developers_per_chain_per_mo['first_date']= pd.to_datetime(df_new_developers_per_chain_per_mo['first_date'])  
-    
-    df = df_new_developers_per_chain_per_mo 
-        
-    fig = draw_chart(df, options, start_date, end_date, "New Developers per Chain per Month", 'first_date', 'new_developers')
-    
-    return fig
-
-#def multiline_chart_new_senior_devs_per_chain(start_date, end_date, options):
-           
-    df_new_senior_developers_per_chain_per_mo = DataFrame(db.new_senior_developers_per_chain_per_mo.find())
-    df_new_senior_developers_per_chain_per_mo['first_date']= pd.to_datetime(df_new_senior_developers_per_chain_per_mo['first_date'])  
-    
-    df = df_new_senior_developers_per_chain_per_mo 
-        
-    fig = draw_chart(df, options, start_date, end_date, "New Senior Developers per Chain per Month", 'first_date', 'new_developers')
-    
-    return fig
-
-
- #===============================
  
 def main():
  
     #==========Create Page===========
     
     st.set_page_config(
-        page_title="GitHub Repository Monitor",
+        page_title="Open Crypto",
         page_icon="📈",
         layout="wide",
     )
@@ -171,9 +33,9 @@ def main():
                 
     st.markdown(hide_st_style, unsafe_allow_html=True)
 
-    st.title("Blockchain Project GitHub Repository Monitor")
+    st.title("The Open Crypto Dashboard")
 
-    st.header("Following the developers to get insights into blockchain demand and building activities.")
+    st.header("An Open Source Project for unbiased Crypto Data Insights")
 
     #=======================================
 
@@ -230,36 +92,11 @@ def main():
     st.info('Sum of repositories created per chain per month.', icon="ℹ️")
 
     #=======================================
+    
+    st.plotly_chart(bar_chart_total_and_active_repositories("Sum of total and active repositories per protocol"),use_container_width=True)
 
-    #with st.container():
-
-        #options_commits_sen_devs = st.multiselect('Select Blockchains: ', all_chains, ['Ethereum', 'Binance', 'Cardano', 'Solana', 'Polygon'])
-
-        #col1, col2, col3, col4 = st.columns(4)
-
-        #with col1:
-            
-            #start_date = datetime.today() - timedelta(days=draw_option_timespan(' '))
-            #end_date = datetime.today()      
-
-        #with col2:
-
-            #option_agg = st.selectbox(
-            #'Count of Commits per: ',
-            #( 'Week', 'Month'),
-            #1
-            #)
-            
-        #with col3:
-            #st.write("")
-            
-        #with col4:
-            #st.write("")
-
-        #st.plotly_chart(multiline_chart_commits_senior_devs(option_agg, end_date, start_date, options_commits_sen_devs), use_container_width=True)
+    st.info('Total of repositories that had at least one commmit in the last three months per chain.', icon="ℹ️")
         
-        #st.info('Sum of the commits per chain during a defined time interval from senior developers. As seniors are qualified those who have made their first commit more than 3 years ago.', icon="ℹ️")
-
     #=======================================
     
     options_commits_all_devs = st.multiselect('Select Blockchains:', all_chains, ['Ethereum', 'Binance', 'Cardano', 'Solana', 'Polygon'])
@@ -311,13 +148,28 @@ def main():
 
     st.plotly_chart(multiline_chart_new_devs_per_chain(end_date, start_date, options_new_devs_per_chain), use_container_width=True)
 
-    st.info('Sum of new developers who start to develope on a chain for the first time per month.', icon="ℹ️")
+    st.info('Sum of new developers who start to build on a chain for the first time per month.', icon="ℹ️")
+    
+    #=======================================
+    
+    st.plotly_chart(bar_chart_stackoverflow_questions("Total number of questions raised on Stackoverflow per protocol"),use_container_width=True)
 
-    st.write("")
-    st.write("")
-    st.write("")
+    st.info('Total of technical questions raised on Stackoverflow per chain. Stackoverflow is an important forum for devs to support each other to find solutions for coding problems.', icon="ℹ️")
 
-    st.info('More charts coming...', icon="👍")
+    #=======================================
+   
+    st.write("Number of active users per chain")
+    
+    components.iframe(src="https://www.footprint.network/public/chart/open-crypto.io-users-per-chain-fp-1be75a9e-943c-4cad-ab95-6eaa9ffc19d7", width=None, height=600, scrolling=False)
+
+    #=======================================
+    
+    st.info('Map of the latest projects of the most successful developers on github.', icon="🏗️")
+    
+    st.info('Statistic on support and skepticism for crypto amongst US and EU politicians.', icon="🏗️")
+    
+    st.info('Statistic on crypto project endorsements by the 100 most influential figures in the crypto space.', icon="🏗️")
+    
 
 
 if __name__ == "__main__":
