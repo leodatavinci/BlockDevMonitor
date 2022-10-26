@@ -160,8 +160,18 @@ def main():
    
     st.write("Number of active users per chain")
     
-    components.iframe(src="https://www.footprint.network/public/chart/open-crypto.io-users-per-chain-fp-1be75a9e-943c-4cad-ab95-6eaa9ffc19d7", width=None, height=600, scrolling=False)
-
+    components.html(
+    """<iframe
+    src="https://www.footprint.network/public/chart/open-crypto.io-users-per-chain-fp-1be75a9e-943c-4cad-ab95-6eaa9ffc19d7"
+    frameborder="0"
+    width="800"
+    height="600"
+    allowtransparency
+    ></iframe>"""
+    )
+    
+    st.info('Total of users that where active within the recent month per chain.', icon="ℹ️")
+    
     #=======================================
     
     st.info('Map of the latest projects of the most successful developers on github.', icon="🏗️")
